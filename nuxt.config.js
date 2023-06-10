@@ -25,6 +25,8 @@ export default {
   plugins: [
     '@/plugins/element-ui',
     '@/plugins/js-cookie',
+    '@/plugins/vue-meta',
+    // '@/plugins/vue-csrf',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -64,6 +66,7 @@ export default {
         autoFetchUser: true,
       }
     },
+    ssr: false,
     // cookie: {
     //   prefix: 'auth.',
     //   options: {

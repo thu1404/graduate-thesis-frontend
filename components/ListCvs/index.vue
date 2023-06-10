@@ -5,6 +5,7 @@
         <CvCard
           :cv="cv"
           @openDetail="handleOpenDetailCv(cv)"
+          @update="handleOpenUpdateCv(cv)"
         />
       </div>
     </div>
@@ -12,12 +13,17 @@
       {{ cvs }}
     </pre> -->
     <el-button @click="handleOpenCreate">add profile</el-button>
-    <CreateCv
-      ref="createCvModal"
-    />
     <DetailCv
       ref="detailCvModal"
       :cv="selectedCv"
+    />
+    <CreateCv
+      ref="createCvModal"
+      @submit="fetchCvs"
+    />
+    <UpdateCv
+      ref="updateCvModal"
+      @submit="fetchCvs"
     />
   </div>
 </template>
@@ -25,6 +31,8 @@
 import CvCard from './CvCard.vue';
 import DetailCv from '../Cv/index.vue';
 import CreateCv from '../Cv/CreateCv.vue';
+import UpdateCv from '../Cv/UpdateCv.vue';
+import userCandidate from '~/composables/useCandidate';
 
 export default {
   name: 'ListCvs',
@@ -33,13 +41,30 @@ export default {
     CvCard,
     DetailCv,
     CreateCv,
+    UpdateCv,
   },
 
-  props: {
-    cvs: {
-      type: Array,
-      default: () => [],
-    },
+  // props: {
+  //   cvs: {
+  //     type: Array,
+  //     default: () => [],
+  //   },
+  // },
+
+  setup() {
+    const {
+      cvs,
+      isFetchingCvs,
+      fetchCvs,
+    } = userCandidate();
+
+    fetchCvs();
+
+    return {
+      cvs,
+      isFetchingCvs,
+      fetchCvs,
+    };
   },
 
   data() {
@@ -55,6 +80,9 @@ export default {
     },
     handleOpenCreate() {
       this.$refs.createCvModal.open();
+    },
+    handleOpenUpdateCv(cv) {
+      this.$refs.updateCvModal.open(cv);
     },
   },
 };

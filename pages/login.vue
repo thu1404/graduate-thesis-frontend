@@ -14,7 +14,6 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import Cookie from 'js-cookie';
-import axios from '~/utils/axios';
 
 export default {
   name: 'LoginPage',
@@ -52,21 +51,9 @@ export default {
         }
       });
       Cookie.set('access_token', response.data.access_token);
-      console.log(response.data);
+      console.log(response.data.csrfToken);
       this.storeUser(response.data.data);
     },
-    // async login() {
-    //   try {
-    //     const payloads = {
-    //       email: this.form.email,
-    //       password: this.form.password,
-    //     };
-    //     const response = await axios.post('/login', payloads);
-    //     console.log(response.data);
-    //   } catch(error) {
-    //     console.log(error);
-    //   }
-    // }
   },
 }
 </script>

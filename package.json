@@ -18,6 +18,8 @@
     "js-cookie": "^3.0.5",
     "nuxt": "^2.15.8",
     "vue": "^2.7.10",
+    "vue-csrf": "^2.0.4",
+    "vue-meta": "^2.4.0",
     "vue-server-renderer": "^2.7.10",
     "vue-template-compiler": "^2.7.10"
   },

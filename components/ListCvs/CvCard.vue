@@ -2,6 +2,7 @@
   <div class="info-card">
     <div class="info-card__avatar">
       <img :src="avatar" alt="avatar">
+      <!-- <img src="../../assets/images/default-avatar.jpg" alt=""> -->
     </div>
     <div class="info-card__content">
       <div class="info-card__content--name" @click="$emit('openDetail')">
@@ -17,6 +18,7 @@
         {{ cv.email }}
       </div>
     </div>
+    <el-button @click="$emit('update')">Edit</el-button>
   </div>
 </template>
 <script>

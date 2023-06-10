@@ -11,7 +11,7 @@ export default {
     return axios.post('/candidate/profile', payloads);
   },
   updateCv(payloads, cvId) {
-    return axios.post(`/candidate/profile/${cvId}`, payloads);
+    return axios.post(`/candidate/updateProfile/${cvId}`, payloads);
   },
   deleteCv(cvId) {
     return axios.post(`/candidate/deleteProfile/${cvId}`);

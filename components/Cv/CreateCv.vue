@@ -7,6 +7,7 @@
     <el-form ref="form" :model="form" :rules="rules" label-position="top">
       <el-form-item>
         <el-input v-model="form.avatar" type="file" @change="handleSelectAvatar" />
+        <!-- <el-input type="hidden" name="_csrf" :value="csrfToken"/> -->
       </el-form-item>
       <el-form-item prop="name" label="Name">
         <el-input v-model="form.name" type="text" placeholder="Enter name" />
@@ -42,10 +43,13 @@
       <el-form-item prop="cv_file" label="CV file">
         <el-input v-model="form.cv_file" type="file" @change="handleSelectCv" />
       </el-form-item>
+      <el-button @click="handleCreate">Create</el-button>
     </el-form>
   </el-dialog>
 </template>
 <script>
+import candidateApi from '~/api/candidate';
+
 export default {
   name: 'CreateCv',
 
@@ -97,21 +101,38 @@ export default {
           message: 'Password is required',
           trigger: ['blur', 'change'],
         },
-      }
+      },
+
     };
   },
+
 
   methods: {
     open() {
       this.isOpen = true;
     },
     handleSelectAvatar(event) {
-      this.form.avatar = event.target.file[0];
+      console.log(event.target);
     },
     handleSelectCv(event) {
       this.form.cv_file = event.target.file[0];
     },
-  }
+    handleCreate() {
+      this.$refs.form.validate(async(valid) => {
+        if(!valid) {
+          return;
+        }
+        try {
+        await candidateApi.createCv(this.form);
+        this.$emit('submit');
+        this.isOpen = false;
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    },
+
+  },
 };
 </script>
 <style lang="scss">
