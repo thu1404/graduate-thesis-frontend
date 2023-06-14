@@ -47,6 +47,7 @@
         </div>
       </div>
     </div>
+    <el-button v-if="job.get_cv.length <= 0" @click="$emit('apply')">Apply</el-button>
   </div>
 </template>
 <script>
@@ -65,6 +66,9 @@ export default {
 .job-card {
   margin: 16px 32px;
   padding: 16px;
+  width: 100%;
+  border: 1px solid #000;
+  border-radius: 4px;
 }
   .content {
     display: flex;

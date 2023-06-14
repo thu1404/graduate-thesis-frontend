@@ -1,13 +1,13 @@
-<template lang="">
+<template>
   <div>
     
   </div>
 </template>
 <script>
 export default {
-  
-}
+  name: 'UpdateJob',
+};
 </script>
-<style lang="">
+<style lang="scss" scoped>
   
 </style>

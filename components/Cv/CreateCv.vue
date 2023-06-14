@@ -7,7 +7,6 @@
     <el-form ref="form" :model="form" :rules="rules" label-position="top">
       <el-form-item>
         <el-input v-model="form.avatar" type="file" @change="handleSelectAvatar" />
-        <!-- <el-input type="hidden" name="_csrf" :value="csrfToken"/> -->
       </el-form-item>
       <el-form-item prop="name" label="Name">
         <el-input v-model="form.name" type="text" placeholder="Enter name" />

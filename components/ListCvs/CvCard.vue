@@ -1,8 +1,8 @@
 <template>
   <div class="info-card">
     <div class="info-card__avatar">
-      <img :src="avatar" alt="avatar">
-      <!-- <img src="../../assets/images/default-avatar.jpg" alt=""> -->
+      <img v-if="avatar !== ''" :src="avatar" alt="avatar">
+      <img v-else src="../../assets/images/default-avatar.jpg" alt="avatar">
     </div>
     <div class="info-card__content">
       <div class="info-card__content--name" @click="$emit('openDetail')">
@@ -18,7 +18,8 @@
         {{ cv.email }}
       </div>
     </div>
-    <el-button @click="$emit('update')">Edit</el-button>
+    <el-button v-if="isApply" @click="$emit('apply')">Apply</el-button>
+    <el-button v-else @click="$emit('update')">Edit</el-button>
   </div>
 </template>
 <script>
@@ -30,6 +31,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    isApply: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {
@@ -37,7 +42,7 @@ export default {
       if (this.cv.avatar) {
         return 'http://localhost:8000' + this.cv.avatar;
       } else {
-        return '/_nuxt/assets/images/default-avatar.jpg';
+        return '';
       }
     }
   }
