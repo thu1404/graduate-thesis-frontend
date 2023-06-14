@@ -21,7 +21,8 @@
     "vue-csrf": "^2.0.4",
     "vue-meta": "^2.4.0",
     "vue-server-renderer": "^2.7.10",
-    "vue-template-compiler": "^2.7.10"
+    "vue-template-compiler": "^2.7.10",
+    "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
     "sass": "^1.62.1",

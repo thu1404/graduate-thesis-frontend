@@ -3,6 +3,7 @@
     title="Add new profile"
     :visible.sync="isOpen"
     width="50%"
+    @close="clearForm"
   >
     <el-form ref="form" :model="form" :rules="rules" label-position="top">
       <el-form-item>
@@ -72,32 +73,32 @@ export default {
       rules: {
         name: {
           required: true,
-          message: 'Password is required',
+          message: 'Name is required',
           trigger: ['blur', 'change'],
         },
         age: {
           required: true,
-          message: 'Password is required',
+          message: 'Age is required',
           trigger: ['blur', 'change'],
         },
         phone: {
           required: true,
-          message: 'Password is required',
+          message: 'Phone number is required',
           trigger: ['blur', 'change'],
         },
         email: {
           required: true,
-          message: 'Password is required',
+          message: 'Email is required',
           trigger: ['blur', 'change'],
         },
         address: {
           required: true,
-          message: 'Password is required',
+          message: 'Address is required',
           trigger: ['blur', 'change'],
         },
         position: {
           required: true,
-          message: 'Password is required',
+          message: 'Prefer position is required',
           trigger: ['blur', 'change'],
         },
       },
@@ -129,8 +130,25 @@ export default {
           console.log(error);
         }
       });
+      this.clearForm();
     },
-
+    clearForm() {
+      this.form = {
+        name: '',
+        avatar: null,
+        age: null,
+        gender_id: null,
+        phone: '',
+        email: '',
+        address: '',
+        position: '',
+        education: '',
+        experience: '',
+        skill: '',
+        cv_file: null,
+      };
+      this.$refs.form.clearValidate();
+    },
   },
 };
 </script>

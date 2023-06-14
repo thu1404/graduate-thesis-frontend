@@ -11,6 +11,8 @@
    />
    <ListJobs
     v-if="activeItem === 2"
+    :jobs="jobs"
+    @applyJob="fetchJobs"
    />
   </div>
 </template>
@@ -21,7 +23,7 @@ import userCandidate from '~/composables/useCandidate';
 import Navbar from './Navbar.vue';
 import Header from './Header.vue';
 import ListCvs from './ListCvs/index.vue';
-import ListJobs from './ListJobs/index.vue'
+import ListJobs from './ListJobs/index.vue';
 
 export default {
   name: 'CandidatePage',
@@ -41,9 +43,6 @@ export default {
 
   setup() {
     const {
-      cvs,
-      isFetchingCvs,
-      fetchCvs,
       jobs,
       isFetchingJobs,
       fetchJobs,
@@ -51,16 +50,9 @@ export default {
 
     const token = Cookie.get('access_token');
 
-    if (token) {
-      // console.log(token);
-      fetchCvs();
-      fetchJobs();
-    }
+    fetchJobs();
 
     return {
-      cvs,
-      isFetchingCvs,
-      fetchCvs,
       jobs,
       isFetchingJobs,
       fetchJobs,

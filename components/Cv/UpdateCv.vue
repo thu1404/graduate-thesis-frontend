@@ -3,6 +3,7 @@
     title="Add new profile"
     :visible.sync="isOpen"
     width="50%"
+    @close="clearForm"
   >
     <el-form ref="form" :model="form" :rules="rules" label-position="top">
       <el-form-item>
@@ -143,7 +144,24 @@ export default {
           console.log(error);
         }
       });
-    }
+      this.clearForm();
+    },
+    clearForm() {
+      this.form = {
+        name: '',
+        avatar: null,
+        age: null,
+        gender_id: null,
+        phone: '',
+        email: '',
+        address: '',
+        position: '',
+        education: '',
+        experience: '',
+        skill: '',
+        cv_file: null,
+      }
+    },
   }
 };
 </script>

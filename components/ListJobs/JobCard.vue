@@ -47,7 +47,8 @@
         </div>
       </div>
     </div>
-    <el-button v-if="job.get_cv.length <= 0" @click="$emit('apply')">Apply</el-button>
+    <el-button v-if="$auth.user?.role_id === 1" @click="$emit('edit')">Edit</el-button>
+    <el-button v-if="job.get_cv?.length <= 0" @click="$emit('apply')">Apply</el-button>
   </div>
 </template>
 <script>
@@ -60,6 +61,14 @@ export default {
       default: () => {},
     },
   },
+
+  // methods: {
+  //   handleOpenJob() {
+  //     if (this.$auth.user?.role_id === 1) {
+  //       this.$emit(job)
+  //     }
+  //   }
+  // }
 };
 </script>
 <style lang="scss" scoped>
