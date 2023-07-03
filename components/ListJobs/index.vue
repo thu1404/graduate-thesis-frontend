@@ -5,6 +5,7 @@
         :job="job"
         @apply="openApplyJob(job.id)"
         @edit="handleOpenEdit(job)"
+        @openKanban="handleOpenKanban(job.id)"
       />
     </div>
     <el-button v-if="$auth.user?.role_id === 1" @click="openCreateJob">Add new Job</el-button>
@@ -53,7 +54,9 @@ export default {
 
   methods: {
     openApplyJob(id) {
-      this.$refs.applyJobDrawer.open(id)
+      if (this.$auth.user?.role_id === 2) {
+        this.$refs.applyJobDrawer.open(id);
+      }
     },
     openCreateJob() {
       if (this.$auth.user?.role_id === 1) {
@@ -65,6 +68,11 @@ export default {
         this.$refs.updateJobModal.open(job);
       }
     },
+    handleOpenKanban(jobId) {
+      if (this.$auth.user?.role_id === 1) {
+        this.$refs.kanbanJobDrawer.open(jobId);
+      }
+    }
   },
 };
 </script>

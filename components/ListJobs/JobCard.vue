@@ -1,6 +1,6 @@
 <template>
   <div class="job-card">
-    <div class="title">{{ job.title }}</div>
+    <div class="title" @click="openKanban">{{ job.title }}</div>
     <div class="content">
       <div class="main__info">
         <div class="main__info--item">
@@ -28,20 +28,20 @@
           </div>
         </div>
       </div>
-      <div class="addition__info">
-        <div class="addition__info--item">
-          <div class="addition__info--label">
+      <div class="additional__info">
+        <div class="additional__info--item">
+          <div class="additional__info--label">
             Work location
           </div>
-          <div class="addition__info--content">
+          <div class="additional__info--content">
             {{ job.location }}
           </div>
         </div>
-        <div class="addition__info--item">
-          <div class="addition__info--label">
+        <div class="additional__info--item">
+          <div class="additional__info--label">
             Salary
           </div>
-          <div class="addition__info--content">
+          <div class="additional__info--content">
             {{ job.salary }}
           </div>
         </div>
@@ -62,13 +62,13 @@ export default {
     },
   },
 
-  // methods: {
-  //   handleOpenJob() {
-  //     if (this.$auth.user?.role_id === 1) {
-  //       this.$emit(job)
-  //     }
-  //   }
-  // }
+  methods: {
+    openKanban() {
+      if (this.$auth.user?.role_id === 1) {
+        this.$emit('openKanban');
+      }
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -78,9 +78,23 @@ export default {
   width: 100%;
   border: 1px solid #000;
   border-radius: 4px;
-}
-  .content {
-    display: flex;
-    justify-content: space-between;
+  .title {
+    font-weight: 600;
+    font-size: 20px;
+    margin-bottom: 12px;
   }
+  .main__info,
+  .additional__info {
+    &--item {
+      margin-bottom: 8px;
+    }
+    &--label {
+      font-weight: 600;
+    }
+  }
+}
+.content {
+  display: flex;
+  justify-content: space-between;
+}
 </style>

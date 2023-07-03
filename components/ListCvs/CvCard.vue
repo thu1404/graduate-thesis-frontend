@@ -61,11 +61,19 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 16px;
     img {
-      width: 200px;
-      height: 200px;
+      width: 160px;
+      height: 160px;
       border-radius: 50%;
-      object-fit: contain;
+    }
+  }
+  &__content {
+    & > div {
+      margin-bottom: 8px;
+    }
+    &--name {
+      font-weight: 700;
     }
   }
 }

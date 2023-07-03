@@ -29,6 +29,12 @@
         <el-input v-model="form.description" type="text" placeholder="Enter description"/>
       </el-form-item>
       <el-form-item
+        prop="benefit"
+        label="Benefit"
+      >
+        <el-input v-model="form.benefit" type="text" placeholder="Enter benefit"/>
+      </el-form-item>
+      <el-form-item
         prop="hiring_process"
         label="Hiring process"
       >

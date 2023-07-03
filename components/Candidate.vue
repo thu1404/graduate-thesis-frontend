@@ -1,6 +1,6 @@
 <template>
   <div>
-   <Header/>
+   <Header @logout="logout"/>
    <Navbar
     :options="navbarOptions"
     :active-item="activeItem"
@@ -19,6 +19,7 @@
 <script>
 import Cookie from 'js-cookie';
 // import candidateApi from '../api/candidate';
+import authApi from '../api/auth';
 import userCandidate from '~/composables/useCandidate';
 import Navbar from './Navbar.vue';
 import Header from './Header.vue';
@@ -85,9 +86,9 @@ export default {
   },
 
   methods: {
-    // async logout() {
-    //   await this.$auth.logout();
-    // },
+    async logout() {
+      await authApi.logout();
+    },
     updateActiveItem(val) {
       this.activeItem = val;
     }

@@ -93,5 +93,6 @@ export default {
   flex-wrap: wrap;
   justify-content: center;
   gap: 32px;
+  margin: 16px;
 }
 </style>

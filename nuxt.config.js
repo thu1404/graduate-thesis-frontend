@@ -50,8 +50,8 @@ export default {
         url: 'http://localhost:8000',
         endpoints: {
           login: {
-              url: '/api/login',
-              method: 'post',
+            url: '/api/login',
+            method: 'post',
           },
           logout: {
             url: '/api/logout',
@@ -77,9 +77,9 @@ export default {
     // },
   },
 
-  router: {
-    middleware: ['auth'],
-  },
+  // router: {
+  //   middleware: ['auth'],
+  // },
 
   // serverMiddleware: [
   //   '~/middleware/cookieParser',
