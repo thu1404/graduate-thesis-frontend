@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header />
     <el-form ref="form" :model="form" :rules="rules" label-position="top">
       <el-form-item prop="email" label="Email">
         <el-input v-model="form.email" type="email" placeholder="Enter email"/>
@@ -14,10 +15,16 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import Cookie from 'js-cookie';
+import Header from '../components/Header.vue';
 
 export default {
   name: 'LoginPage',
   // middleware: ['authenticate'],
+
+  components: {
+    Header,
+  },
+
   data() {
     return {
       form: {

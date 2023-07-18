@@ -76,7 +76,8 @@ export default {
   margin: 16px 32px;
   padding: 16px;
   width: 100%;
-  border: 1px solid #000;
+  // border: 1px solid #000;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
   .title {
     font-weight: 600;

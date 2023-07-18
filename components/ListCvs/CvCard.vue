@@ -53,7 +53,8 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid black;
+  // border: 1px solid black;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   width: 240px;
   height: 360px;

@@ -172,7 +172,8 @@ export default {
       };
       this.$refs.form.clearValidate();
     },
-  }
+  },
+
 };
 </script>
 <style lang="scss" scoped>

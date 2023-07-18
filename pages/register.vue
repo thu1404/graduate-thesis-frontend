@@ -1,6 +1,9 @@
 <template>
   <div>
     <el-form ref="form" :model="form" :rules="rules" label-position="top">
+      <el-form-item prop="name" label="Your name">
+        <el-input v-model="form.name" type="text" placeholder="Enter your name"/>
+      </el-form-item>
       <el-form-item prop="email" label="Email">
         <el-input v-model="form.email" type="email" placeholder="Enter email"/>
       </el-form-item>
@@ -11,25 +14,33 @@
         <el-radio v-model="form.role" :label="2">Candidate (Looking for jobs)</el-radio>
         <el-radio v-model="form.role" :label="1">Recruiter</el-radio>
       </el-form-item>
-      <el-button @click="login">Login</el-button>
+      <el-button @click="register">Sign up</el-button>
     </el-form>
+    <span @click="login">Already have an account? Log In</span>
   </div>
 </template>
 <script>
-import { mapActions, mapState } from 'vuex';
-import Cookie from 'js-cookie';
+// import { mapActions, mapState } from 'vuex';
+// import Cookie from 'js-cookie';
+import authApi from '../api/auth';
 
 export default {
   name: 'RegisterPage',
-  // middleware: ['authenticate'],
+
   data() {
     return {
       form: {
+        name: '',
         email: '',
         password: '',
         role: 2,
       },
       rules: {
+        name: {
+          required: true,
+          message: 'Name is required',
+          trigger: ['blur', 'change'],
+        },
         email: {
           required: true,
           message: 'Email is required',
@@ -45,19 +56,26 @@ export default {
   },
 
   methods: {
-    ...mapActions({
-      storeUser: 'modules/user/storeUser',
-    }),
-    async login() {
-      const response = await this.$auth.loginWith('laravelSanctum', {
-        data: {
+    // ...mapActions({
+    //   storeUser: 'modules/user/storeUser',
+    // }),
+    async register() {
+      try {
+        const response = await authApi.register({
+          name: this.form.name,
           email: this.form.email,
           password: this.form.password,
+          role: this.form.role,
+        });
+        if (response.status === 200) {
+          this.$router.push('/login');
         }
-      });
-      Cookie.set('access_token', response.data.access_token);
-      console.log(response.data.csrfToken);
-      this.storeUser(response.data.data);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    login() {
+      this.$router.push('/login');
     },
   },
 }

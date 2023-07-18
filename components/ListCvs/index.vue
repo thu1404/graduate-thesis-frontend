@@ -9,9 +9,7 @@
         />
       </div>
     </div>
-    <!-- <pre>
-      {{ cvs }}
-    </pre> -->
+
     <el-button @click="handleOpenCreate">add profile</el-button>
     <DetailCv
       ref="detailCvModal"
@@ -85,6 +83,11 @@ export default {
       this.$refs.updateCvModal.open(cv);
     },
   },
+
+  mounted() {
+    this.fetchCvs();
+  }
+
 };
 </script>
 <style lang="scss" scoped>
