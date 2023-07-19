@@ -38,9 +38,6 @@
       <el-form-item prop="experience" label="Experience">
         <el-input v-model="form.experience" type="text" placeholder="Enter your experiences"/>
       </el-form-item>
-      <el-form-item prop="skill" label="Skill">
-        <el-input v-model="form.skill" type="text" placeholder="Enter your skill"/>
-      </el-form-item>
       <el-select v-model="listSkillSelected" multiple placeholder="Select">
         <el-option
           v-for="item in listSkill"
@@ -76,7 +73,6 @@ export default {
         position: '',
         education: '',
         experience: '',
-        skill: '',
         cv_file: null,
       },
       rules: {
@@ -145,8 +141,8 @@ export default {
           for(const key in this.form) {
             formData.append(key, this.form[key])
           }
-          [1,2].forEach((skill, index) => {
-            formData.append(`skills[${index}]`, JSON.stringify(skill));
+          this.listSkillSelected.forEach((skill) => {
+            formData.append(`skills[]`, JSON.stringify(skill));
           });
         await candidateApi.createCv(formData);
         this.$emit('submit');
