@@ -7,7 +7,8 @@
   >
     <el-form ref="form" :model="form" :rules="rules" label-position="top">
       <el-form-item>
-        <el-input v-model="form.avatar" type="file" @change="handleSelectAvatar" />
+<!--        <el-input v-model="form.avatar" type="file" @change="handleSelectAvatar" />-->
+        <input type="file"  @change="handleSelectAvatar"  ref="file">
       </el-form-item>
       <el-form-item prop="name" label="Name">
         <el-input v-model="form.name" type="text" placeholder="Enter name" />
@@ -40,8 +41,16 @@
       <el-form-item prop="skill" label="Skill">
         <el-input v-model="form.skill" type="text" placeholder="Enter your skill"/>
       </el-form-item>
+      <el-select v-model="listSkillSelected" multiple placeholder="Select">
+        <el-option
+          v-for="item in listSkill"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id">
+        </el-option>
+      </el-select>
       <el-form-item prop="cv_file" label="CV file">
-        <el-input v-model="form.cv_file" type="file" @change="handleSelectCv" />
+        <input type="file"  @change="handleSelectCv"  ref="fileCv">
       </el-form-item>
       <el-button @click="handleCreate">Create</el-button>
     </el-form>
@@ -49,7 +58,7 @@
 </template>
 <script>
 import candidateApi from '~/api/candidate';
-
+import skillsApi from '~/api/skills'
 export default {
   name: 'CreateCv',
 
@@ -57,7 +66,7 @@ export default {
     return {
       isOpen: false,
       form: {
-        name: '',
+        name: 'h',
         avatar: null,
         age: null,
         gender_id: null,
@@ -102,8 +111,13 @@ export default {
           trigger: ['blur', 'change'],
         },
       },
-
+      listSkill: [],
+      listSkillSelected: []
     };
+  },
+
+  created() {
+    this.getListSkills()
   },
 
 
@@ -111,11 +125,15 @@ export default {
     open() {
       this.isOpen = true;
     },
-    handleSelectAvatar(event) {
-      console.log(event.target);
+    handleSelectAvatar() {
+      const fileInput = this.$refs.file
+      const imgFile = fileInput.files
+      this.form.avatar = imgFile[0]
     },
-    handleSelectCv(event) {
-      this.form.cv_file = event.target.file[0];
+    handleSelectCv() {
+      const fileInput = this.$refs.fileCv
+      const imgFile = fileInput.files
+      this.form.cv_file = imgFile[0]
     },
     handleCreate() {
       this.$refs.form.validate(async(valid) => {
@@ -123,7 +141,14 @@ export default {
           return;
         }
         try {
-        await candidateApi.createCv(this.form);
+          const formData = new FormData()
+          for(const key in this.form) {
+            formData.append(key, this.form[key])
+          }
+          [1,2].forEach((skill, index) => {
+            formData.append(`skills[${index}]`, JSON.stringify(skill));
+          });
+        await candidateApi.createCv(formData);
         this.$emit('submit');
         this.isOpen = false;
         } catch (error) {
@@ -149,9 +174,18 @@ export default {
       };
       this.$refs.form.clearValidate();
     },
+    async getListSkills() {
+      try {
+          const response = await skillsApi.getListSkills()
+          this.listSkill = response.data.skills
+      }
+      catch (e) {
+        console.log(e)
+      }
+    }
   },
 };
 </script>
 <style lang="scss">
-  
+
 </style>
