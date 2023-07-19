@@ -9,10 +9,7 @@
       No one has applied to this Job
     </div>
     <div v-else class="kanban-board">
-      <div
-        v-for="(item, index) in kanbans"
-        :key="item.id"
-      >
+      <div v-for="item in kanbans" :key="item.id">
         <KanbanCvCard
           :kanban="item"
           :hiring-process="kanbanProcess[0]"
@@ -23,11 +20,11 @@
   </el-drawer>
 </template>
 <script>
-import useKanban from '../../composables/useKanban';
-import KanbanCvCard from '../Job/KanbanCvCard.vue';
+import useKanban from "../../composables/useKanban";
+import KanbanCvCard from "../Job/KanbanCvCard.vue";
 
 export default {
-  name: 'KanbanJob',
+  name: "KanbanJob",
 
   components: {
     KanbanCvCard,
@@ -54,15 +51,15 @@ export default {
   data() {
     return {
       isOpen: false,
-    }
+    };
   },
 
   methods: {
     open(jobId) {
       this.isOpen = true;
       this.fetchKanban(jobId);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

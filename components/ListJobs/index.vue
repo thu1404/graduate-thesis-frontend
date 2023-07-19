@@ -5,50 +5,67 @@
         :job="job"
         @apply="openApplyJob(job.id)"
         @edit="handleOpenEdit(job)"
-        @openKanban="handleOpenKanban(job.id)"
+        @openKanban="openDrawer(job.id)"
       />
     </div>
-    <el-button v-if="$auth.user?.role_id === 1" @click="openCreateJob">Add new Job</el-button>
-    <CreateJob
-      ref="createJobModal"
-      @submit="$emit('reloadList')"
-    />
-    <UpdateJob
-      ref="updateJobModal"
-      @submit="$emit('reloadList')"
-    />
-    <KanbanJob
-      ref="kanbanJobDrawer"
-    />
-    <ApplyJob
-      ref="applyJobDrawer"
-      @apply="$emit('applyJob')"
-    />
-    <div>Hell</div>
-    <div class="round-list">
-      <div class="round-item" v-for="(round, index) in hiringProgressRound" :key="round.id">
-        <h1>{{round.name}}</h1>
-        <div>
-          <div>
-            <span>Pass: {{listRender[index].resolve.length}}/{{kanBanProgress.length}}({{caculatePer(listRender[index].resolve.length)}})</span>
-            <span>Reject: {{listRender[index].reject.length}}/{{kanBanProgress.length}}({{caculatePer(listRender[index].reject.length)}})</span>
+    <el-button v-if="$auth.user?.role_id === 1" @click="openCreateJob"
+      >Add new Job</el-button
+    >
+    <CreateJob ref="createJobModal" @submit="$emit('reloadList')" />
+    <UpdateJob ref="updateJobModal" @submit="$emit('reloadList')" />
+    <KanbanJob ref="kanbanJobDrawer" />
+    <ApplyJob ref="applyJobDrawer" @apply="$emit('applyJob')" />
+    <el-drawer
+      title="Job kanbans board"
+      :visible.sync="isOpen"
+      direction="btt"
+      size="90%"
+    >
+      <el-tabs type="card" @tab-click="handleClick">
+        <el-tab-pane label="analytic">
+          <div class="round-list">
+            <div
+              class="round-item"
+              v-for="(round, index) in hiringProgressRound"
+              :key="round.id"
+            >
+              <h1>{{ round.name }}</h1>
+              <div>
+                <div>
+                  <span
+                    >Pass: {{ listRender[index].resolve.length }}/{{
+                      kanBanProgress.length
+                    }}({{
+                      caculatePer(listRender[index].resolve.length)
+                    }})</span
+                  >
+                  <span
+                    >Reject: {{ listRender[index].reject.length }}/{{
+                      kanBanProgress.length
+                    }}({{ caculatePer(listRender[index].reject.length) }})</span
+                  >
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </el-tab-pane>
+        <el-tab-pane label="kanban">Config</el-tab-pane>
+      </el-tabs>
+    </el-drawer>
   </div>
 </template>
 <script>
-import JobCard from './JobCard.vue';
+import JobCard from "./JobCard.vue";
 // import userCandidate from '~/composables/useCandidate';
-import kanBanApi from '~/api/hrKanban'
-import CreateJob from '../Job/CreateJob.vue';
-import UpdateJob from '../Job/UpdateJob.vue';
-import KanbanJob from '../Job/KanbanJob.vue';
-import ApplyJob from '../Job/ApplyJob.vue';
+import Kanban from "@/components/kanban.vue";
+import kanBanApi from "~/api/hrKanban";
+import CreateJob from "../Job/CreateJob.vue";
+import UpdateJob from "../Job/UpdateJob.vue";
+import KanbanJob from "../Job/KanbanJob.vue";
+import ApplyJob from "../Job/ApplyJob.vue";
 
 export default {
-  name: 'ListJobs',
+  name: "ListJobs",
 
   components: {
     JobCard,
@@ -56,13 +73,16 @@ export default {
     UpdateJob,
     KanbanJob,
     ApplyJob,
+    Kanban,
   },
   data() {
     return {
-      kanBanProgress : [],
-      hiringProgressRound : [],
-      list: []
-    }
+      kanBanProgress: [],
+      hiringProgressRound: [],
+      list: [],
+      isOpen: false,
+      activeName: "analytic",
+    };
   },
   props: {
     jobs: {
@@ -72,26 +92,35 @@ export default {
   },
 
   created() {
-    this.getKanbanProgress()
+    this.getKanbanProgress();
   },
   computed: {
     listRender() {
-      const data = []
+      const data = [];
       this.hiringProgressRound.forEach((round) => {
         const list = {
           resolve: [],
-          reject: []
-        }
-        list.resolve = (this.kanBanProgress.filter((item) => item.round_id >= round.id))
-        list.reject = (this.kanBanProgress.filter((item) => item.round_id === round.id && item.status === 0))
-        data.push(list)
-      })
-      return data
-    }
+          reject: [],
+        };
+        list.resolve = this.kanBanProgress.filter(
+          (item) =>
+            item.round_id > round.id ||
+            (item.round_id === round.id && item.status !== 0)
+        );
+        list.reject = this.kanBanProgress.filter(
+          (item) => item.round_id === round.id && item.status === 0
+        );
+        data.push(list);
+      });
+      return data;
+    },
   },
   methods: {
+    handleClick(tab, event) {
+      console.log(tab, event);
+    },
     caculatePer(count) {
-      return ((count/ this.kanBanProgress.length) *100).toFixed(2)
+      return ((count / this.kanBanProgress.length) * 100).toFixed(2);
     },
     openApplyJob(id) {
       if (this.$auth.user?.role_id === 2) {
@@ -114,11 +143,16 @@ export default {
       }
     },
     async getKanbanProgress() {
-      const response = await  kanBanApi.getKanban(2)
-      this.kanBanProgress = response.data.kanbanBoard
-      this.hiringProgressRound = response.data.hiringProcess[0].hiring_process_round
-      console.log( this.hiringProgressRound)
-    }
+      const response = await kanBanApi.getKanban(3);
+      this.kanBanProgress = response.data.kanbanBoard;
+      this.hiringProgressRound =
+        response.data.hiringProcess[0].hiring_process_round;
+      console.log(this.hiringProgressRound);
+    },
+    openDrawer(id) {
+      this.isOpen = true;
+      this.idSelected = id;
+    },
   },
 };
 </script>
