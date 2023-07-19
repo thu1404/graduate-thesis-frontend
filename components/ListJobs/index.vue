@@ -82,6 +82,7 @@ export default {
       list: [],
       isOpen: false,
       activeName: "analytic",
+      idSelected: null,
     };
   },
   props: {
@@ -91,8 +92,15 @@ export default {
     },
   },
 
-  created() {
-    this.getKanbanProgress();
+  watch: {
+    idSelected: {
+      handler() {
+        console.log({ idSelected: this.idSelected });
+        this.kanBanProgress = [];
+        this.hiringProgressRound = [];
+        this.getKanbanProgress();
+      },
+    },
   },
   computed: {
     listRender() {
@@ -143,13 +151,13 @@ export default {
       }
     },
     async getKanbanProgress() {
-      const response = await kanBanApi.getKanban(3);
+      const response = await kanBanApi.getKanban(this.idSelected);
       this.kanBanProgress = response.data.kanbanBoard;
       this.hiringProgressRound =
         response.data.hiringProcess[0].hiring_process_round;
-      console.log(this.hiringProgressRound);
     },
     openDrawer(id) {
+      console.log(id);
       this.isOpen = true;
       this.idSelected = id;
     },
