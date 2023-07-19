@@ -61,12 +61,12 @@ export default {
     },
     redirectHRJob() {
       if(this.$auth.user?.role_id === 1) {
-        this.$router.push('/candidate');
+        this.$router.push('/recruiter');
       }
     },
     redirectHRProcess() {
       if(this.$auth.user?.role_id === 1) {
-        this.$router.push('/candidate/process');
+        this.$router.push('/recruiter/process');
       }
     },
   },

@@ -63,7 +63,7 @@ export default {
     return {
       isOpen: false,
       form: {
-        name: 'h',
+        name: '',
         avatar: null,
         age: null,
         gender_id: null,
