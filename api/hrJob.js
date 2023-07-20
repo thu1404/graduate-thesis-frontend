@@ -16,4 +16,10 @@ export default {
   deleteJob(id) {
     return axios.post(`hr/delete-job/${id}`);
   },
+  enableJob(id) {
+    return axios.post(`hr/enable-job/${id}`);
+  },
+  disableJob(id) {
+    return axios.post(`hr/disable-job/${id}`);
+  }
 };

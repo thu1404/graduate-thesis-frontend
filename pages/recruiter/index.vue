@@ -1,16 +1,16 @@
 <template>
   <div>
-    <Header/>
-    <ListJobs :jobs="hrJobs" @reloadList="fetchHrJobs"/>
+    <Header />
+    <ListJobs :jobs="hrJobs" @reloadList="fetchHrJobs" />
   </div>
 </template>
 <script>
-import Header from '~/components/Header.vue';
-import ListJobs from '~/components/ListJobs/index.vue';
-import useJob from '~/composables/useJob';
+import Header from "~/components/Header.vue";
+import ListJobs from "~/components/ListJobs/index.vue";
+import useJob from "~/composables/useJob";
 
 export default {
-  name: 'HRJob',
+  name: "HRJob",
 
   components: {
     Header,
@@ -18,11 +18,7 @@ export default {
   },
 
   setup() {
-    const {
-      hrJobs,
-      isFetchingHrJobs,
-      fetchHrJobs,
-    } = useJob();
+    const { hrJobs, isFetchingHrJobs, fetchHrJobs } = useJob();
 
     // fetchHrJobs();
 
@@ -35,9 +31,7 @@ export default {
 
   mounted() {
     this.fetchHrJobs();
-  }
-}
+  },
+};
 </script>
-<style lang="scss">
-  
-</style>
+<style lang="scss"></style>
