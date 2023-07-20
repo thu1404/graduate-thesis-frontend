@@ -51,35 +51,13 @@
               style="min-height: 100px"
             >
               <div v-for="(item, index) in board.items" :key="index">
-                <div class="cv-item">
-                  <div>
-                    <img
-                      style="
-                        width: 60px;
-                        height: 60px;
-                        border-radius: 100%;
-                        margin-right: 10px;
-                      "
-                      src="https://tse2.mm.bing.net/th?id=OIP.O70iDYogu82D_8mBtMDP5QHaEK&pid=Api&P=0&h=180"
-                      alt=""
-                    />
-                  </div>
-                  <div>
-                    <p>Name:{{ item.cv.name }}</p>
-                    <p>Email: {{ item.cv.email }}</p>
-                    <button
-                      @click="
-                        rejectCv({
-                          id: item.job_id,
-                          cv_id: item.cv_id,
-                        })
-                      "
-                    >
-                      Loai
-                    </button>
-                  </div>
-                  <div></div>
-                </div>
+                <cv-item
+                  :item="item"
+                  :hiringProgressRound="hiringProgressRound"
+                  @rejectCv="rejectCv"
+                  @reloadList="$emit('reloadList')"
+                  :disableButton="board.id === 0"
+                />
               </div>
             </draggable>
           </div>
@@ -92,15 +70,19 @@
 <script>
 import draggable from "vuedraggable";
 import hrJob from "../../api/hrJob";
+import CvItem from "./CvItem.vue";
 export default {
   components: {
     draggable,
+    CvItem,
   },
   data() {
     return {
       activeName: "analytic",
       dialogVisiable: false,
       dataBoardRedner: [],
+      visible: false,
+      rejectCvData: {},
     };
   },
   props: {
@@ -196,6 +178,11 @@ export default {
     },
     async rejectCv(payload) {
       await hrJob.rejectCv(payload).then(() => this.$emit("reloadList"));
+    },
+    handleOpenRejectConfirm(payload) {
+      console.log("Handle", payload);
+      this.visible = true;
+      this.rejectCvData = payload;
     },
   },
 };
