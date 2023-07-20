@@ -16,43 +16,13 @@
     <UpdateJob ref="updateJobModal" @submit="$emit('reloadList')" />
     <KanbanJob ref="kanbanJobDrawer" />
     <ApplyJob ref="applyJobDrawer" @apply="$emit('applyJob')" />
-    <el-drawer
-      title="Job kanbans board"
-      :visible.sync="isOpen"
-      direction="btt"
-      size="90%"
-    >
-      <el-tabs type="card" @tab-click="handleClick">
-        <el-tab-pane label="analytic">
-          <div class="round-list">
-            <div
-              class="round-item"
-              v-for="(round, index) in hiringProgressRound"
-              :key="round.id"
-            >
-              <h1>{{ round.name }}</h1>
-              <div>
-                <div>
-                  <span
-                    >Pass: {{ listRender[index].resolve.length }}/{{
-                      kanBanProgress.length
-                    }}({{
-                      caculatePer(listRender[index].resolve.length)
-                    }})</span
-                  >
-                  <span
-                    >Reject: {{ listRender[index].reject.length }}/{{
-                      kanBanProgress.length
-                    }}({{ caculatePer(listRender[index].reject.length) }})</span
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="kanban">Config</el-tab-pane>
-      </el-tabs>
-    </el-drawer>
+    <jobBoard
+      :isOpen="isOpen"
+      :hiringProgressRound="hiringProgressRound"
+      :listRender="listRender"
+      :kanBanProgress="kanBanProgress"
+      @close="handleClose"
+    />
   </div>
 </template>
 <script>
@@ -64,6 +34,7 @@ import CreateJob from "../Job/CreateJob.vue";
 import UpdateJob from "../Job/UpdateJob.vue";
 import KanbanJob from "../Job/KanbanJob.vue";
 import ApplyJob from "../Job/ApplyJob.vue";
+import JobBoard from "./JobBoard.vue";
 
 export default {
   name: "ListJobs",
@@ -75,6 +46,7 @@ export default {
     KanbanJob,
     ApplyJob,
     Kanban,
+    JobBoard,
   },
   data() {
     return {
@@ -82,7 +54,6 @@ export default {
       hiringProgressRound: [],
       list: [],
       isOpen: false,
-      activeName: "analytic",
       idSelected: null,
     };
   },
@@ -126,13 +97,7 @@ export default {
   },
   methods: {
     reloadList() {
-      this.$emit('reloadList')
-    },
-    handleClick(tab, event) {
-      console.log(tab, event);
-    },
-    caculatePer(count) {
-      return ((count / this.kanBanProgress.length) * 100).toFixed(2);
+      this.$emit("reloadList");
     },
     openApplyJob(id) {
       if (this.$auth.user?.role_id === 2) {
@@ -161,9 +126,11 @@ export default {
         response.data.hiringProcess[0].hiring_process_round;
     },
     openDrawer(id) {
-      console.log(id);
       this.isOpen = true;
       this.idSelected = id;
+    },
+    handleClose() {
+      this.isOpen = false;
     },
   },
 };
@@ -175,15 +142,18 @@ export default {
     flex-direction: column;
     align-items: center;
   }
+
   &__item {
     max-width: 1200px;
     width: 100%;
   }
 }
+
 .round-list {
   display: flex;
   width: 100%;
 }
+
 .round-item {
   width: 25%;
 }
