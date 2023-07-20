@@ -67,11 +67,11 @@ export default {
 </script>
 
 <style>
-.column {
+/* .column {
   width: 200px;
   margin: 10px;
   padding: 10px;
   border: 1px solid #ccc;
   background-color: #f9f9f9;
-}
+} */
 </style>
