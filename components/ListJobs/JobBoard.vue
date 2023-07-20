@@ -39,7 +39,7 @@
             class="column"
             :data-column="board.id"
             :key="index"
-            style="min-height: 100px"
+            style="min-height: 100px; height: 100%"
           >
             <h3>{{ board.name }}</h3>
             <draggable
