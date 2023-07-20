@@ -6,6 +6,7 @@
         @apply="openApplyJob(job.id)"
         @edit="handleOpenEdit(job)"
         @openKanban="openDrawer(job.id)"
+        @reloadList="reloadList"
       />
     </div>
     <el-button v-if="$auth.user?.role_id === 1" @click="openCreateJob"
@@ -124,6 +125,9 @@ export default {
     },
   },
   methods: {
+    reloadList() {
+      this.$emit('reloadList')
+    },
     handleClick(tab, event) {
       console.log(tab, event);
     },
