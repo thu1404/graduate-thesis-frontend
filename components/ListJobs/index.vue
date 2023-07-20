@@ -22,6 +22,8 @@
       :listRender="listRender"
       :kanBanProgress="kanBanProgress"
       @close="handleClose"
+      @reloadList="getKanbanProgress"
+      :dataBoard="dataBoard"
     />
   </div>
 </template>
@@ -94,6 +96,29 @@ export default {
       });
       return data;
     },
+    dataBoard() {
+      console.log(this.kanBanProgress);
+      const data = [];
+      this.hiringProgressRound.forEach((round) => {
+        console.log(round);
+        const item = {
+          name: round.name,
+          id: round.id,
+          items: [],
+        };
+        item.items = this.kanBanProgress.filter(
+          (item) => item.round_id === round.id && item.status !== 0
+        );
+        data.push(item);
+      });
+      console.log(data);
+      data.push({
+        name: "Reject",
+        id: 0,
+        items: this.kanBanProgress.filter((item) => item.status === 0),
+      });
+      return data;
+    },
   },
   methods: {
     reloadList() {
@@ -120,10 +145,18 @@ export default {
       }
     },
     async getKanbanProgress() {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
       const response = await kanBanApi.getKanban(this.idSelected);
+
       this.kanBanProgress = response.data.kanbanBoard;
       this.hiringProgressRound =
         response.data.hiringProcess[0].hiring_process_round;
+      loading.close();
     },
     openDrawer(id) {
       this.isOpen = true;
@@ -147,14 +180,5 @@ export default {
     max-width: 1200px;
     width: 100%;
   }
-}
-
-.round-list {
-  display: flex;
-  width: 100%;
-}
-
-.round-item {
-  width: 25%;
 }
 </style>
