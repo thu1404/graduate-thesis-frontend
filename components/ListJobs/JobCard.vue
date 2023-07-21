@@ -41,10 +41,12 @@
       >Edit</el-button
     >
     <el-switch
+      v-if="$auth.user?.role_id === 1"
       @change="handleChangeStatus"
       v-model="status"
       active-color="#13ce66"
-      inactive-color="#ff4949">
+      inactive-color="#ff4949"
+    >
     </el-switch>
     <el-button v-if="job.get_cv?.length <= 0" @click="$emit('apply')"
       >Apply</el-button
@@ -58,8 +60,8 @@ export default {
   name: "JobCard",
   data() {
     return {
-      status: false
-    }
+      status: false,
+    };
   },
   props: {
     job: {
@@ -68,7 +70,7 @@ export default {
     },
   },
   mounted() {
-    this.status = !this.job.inactive
+    this.status = !this.job.inactive;
   },
   methods: {
     openKanban(id) {
@@ -77,28 +79,31 @@ export default {
       }
     },
     async handleChangeStatus(event) {
-      console.log(event)
-      if(event) {
-          hrJob.enableJob(this.job.id).then(() => {
-              this.$emit('reloadList')
-              this.$notify({
-                message:"Bật job thành công",
-                type:'success'
-              })
+      console.log(event);
+      if (event) {
+        hrJob
+          .enableJob(this.job.id)
+          .then(() => {
+            this.$emit("reloadList");
+            this.$notify({
+              message: "Bật job thành công",
+              type: "success",
+            });
           })
-            .catch(console.log)
-      }
-      else {
-        hrJob.disableJob(this.job.id).then(() => {
-          this.$emit('reloadList')
-          this.$notify({
-            message:"Ẩn job thành công",
-            type:'success'
+          .catch(console.log);
+      } else {
+        hrJob
+          .disableJob(this.job.id)
+          .then(() => {
+            this.$emit("reloadList");
+            this.$notify({
+              message: "Ẩn job thành công",
+              type: "success",
+            });
           })
-        })
-          .catch(console.log)
+          .catch(console.log);
       }
-    }
+    },
   },
 };
 </script>
