@@ -1,5 +1,5 @@
 <template>
-  <div class="cv-item">
+  <div class="cv-item shadow-md">
     <div>
       <img
         style="
@@ -12,43 +12,50 @@
         alt=""
       />
     </div>
-    <div>
-      <p>Name:{{ item.cv.name }}</p>
-      <p>Email: {{ item.cv.email }}</p>
-      <el-popover
-        placement="top"
-        width="160"
-        v-model="visible"
-        v-if="!disableButton"
-      >
-        <p>Are you sure to delete this?</p>
-        <div style="text-align: right; margin: 0">
-          <el-button size="mini" type="text" @click="visible = false"
-            >cancel</el-button
+    <div class="ml-2">
+      <div>
+        <p>Name:{{ item.cv.name }}</p>
+        <p>Email: {{ item.cv.email }}</p>
+      </div>
+      <div class="flex items-center mt-2">
+        <div class="mr-4">
+          <el-popover
+            placement="top"
+            width="160"
+            v-model="visible"
+            v-if="!disableButton"
           >
-          <el-button
-            type="primary"
-            size="mini"
-            @click="handleRejectCv({ id: item.job_id, cv_id: item.cv_id })"
-            >confirm</el-button
-          >
+            <p>Are you sure to delete this?</p>
+            <div style="text-align: right; margin: 0">
+              <el-button size="mini" type="text" @click="visible = false"
+                >cancel</el-button
+              >
+              <el-button
+                type="primary"
+                size="mini"
+                @click="handleRejectCv({ id: item.job_id, cv_id: item.cv_id })"
+                >confirm</el-button
+              >
+            </div>
+            <el-button slot="reference">Loai</el-button>
+          </el-popover>
         </div>
-        <el-button slot="reference">Loai</el-button>
-      </el-popover>
-      <el-select
-        v-if="!disableButton"
-        v-model="item.round.id"
-        placeholder="Select"
-        @change="handleChangeRound"
-      >
-        <el-option
-          v-for="item in hiringProgressRound"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
+        <el-select
+          v-if="!disableButton"
+          v-model="item.round.id"
+          placeholder="Select"
+          @change="handleChangeRound"
+          clear="ml-4"
         >
-        </el-option>
-      </el-select>
+          <el-option
+            v-for="item in hiringProgressRound"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+      </div>
     </div>
   </div>
 </template>
