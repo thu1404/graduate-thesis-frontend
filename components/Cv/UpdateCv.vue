@@ -9,6 +9,19 @@
       <el-form-item>
         <input type="file" @change="handleSelectAvatar" ref="file" />
       </el-form-item>
+      <div>
+        <img
+          v-if="imagePreview"
+          :src="imagePreview"
+          alt="Image Preview"
+          style="
+            width: 300px;
+            height: 300px;
+            border-radius: 100%;
+            margin: 0 auto;
+          "
+        />
+      </div>
       <el-form-item prop="name" label="Name">
         <el-input v-model="form.name" type="text" placeholder="Enter name" />
       </el-form-item>
@@ -87,6 +100,7 @@ export default {
   data() {
     return {
       isOpen: false,
+      imagePreview: null,
       cv_id: "",
       form: {
         name: "",
@@ -159,11 +173,28 @@ export default {
       };
       this.listSkillSelected = cv.get_skills || [];
       this.isOpen = true;
+      this.imagePreview = null;
     },
     handleSelectAvatar() {
       const fileInput = this.$refs.file;
       const imgFile = fileInput.files;
       this.form.avatar = imgFile[0];
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      // Ensure the file is an image
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file.");
+        return;
+      }
+
+      // Set up the FileReader to display the image once it's loaded
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+      };
+
+      // Read the image as a data URL
+      reader.readAsDataURL(file);
     },
     handleSelectCv() {
       const fileInput = this.$refs.fileCv;

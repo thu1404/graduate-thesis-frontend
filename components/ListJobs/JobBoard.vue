@@ -7,79 +7,63 @@
     size="90%"
   >
     <el-tabs type="card" @tab-click="handleClick">
-      <el-tab-pane label="analytic">
-        <div class="round-list">
+      <el-tab-pane label="analytic ">
+        <div class="grid grid-cols-4 gap-3 mt-10 px-4">
           <div
-            class="round-item"
+            class="col-span-1 text-center shadow-lg rounded-xl bg-white py-2"
             v-for="(round, index) in hiringProgressRound"
             :key="round.id"
           >
-            <h1>{{ round.name }}</h1>
-            <div>
-              <div>
-                <span
-                  >Pass: {{ listRender[index].resolve.length }}/{{
-                    kanBanProgress.length
-                  }}({{ caculatePer(listRender[index].resolve.length) }})
-                </span>
-                <span
-                  >Reject: {{ listRender[index].reject.length }}/{{
-                    kanBanProgress.length
-                  }}({{ caculatePer(listRender[index].reject.length) }})
-                </span>
+            <div class="py-2">
+              <h1 class="w-full font-bold mb-2 text-2xl">{{ round.name }}</h1>
+              <div class="w-full">
+                <div>
+                  <span
+                    ><span class="font-bold">Pass:</span>
+                    {{ listRender[index].resolve.length }}/{{
+                      kanBanProgress.length
+                    }}({{ caculatePer(listRender[index].resolve.length) }}%)
+                  </span>
+                  <span
+                    ><span class="font-bold">Reject</span>:
+                    {{ listRender[index].reject.length }}/{{
+                      kanBanProgress.length
+                    }}({{ caculatePer(listRender[index].reject.length) }}%)
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </el-tab-pane>
       <el-tab-pane label="kanban">
-        <div class="column-list">
+        <div class="grid grid-cols-5 gap-3 px-4">
           <div
             v-for="(board, index) in dataBoard"
-            class="column"
+            class="col-span-1 bg-white shadow-md mb-4"
             :data-column="board.id"
             :key="index"
-            style="min-height: 100px; height: 100%"
+            style="min-height: 200px; height: 100%"
           >
-            <h3>{{ board.name }}</h3>
+            <h3 class="text-center txxt-lg font-bold my-2 mb-4">
+              {{ board.name }}
+            </h3>
             <draggable
               :group="{ name: 'columns', pull: board.id !== 0 }"
               v-model="board.items"
               :data-column="board.id"
               @end="onEndDrag"
               @start="onStartDrag"
-              style="min-height: 100px"
+              style="min-height: 200px"
             >
               <div v-for="(item, index) in board.items" :key="index">
-                <div class="cv-item">
-                  <div>
-                    <img
-                      style="
-                        width: 60px;
-                        height: 60px;
-                        border-radius: 100%;
-                        margin-right: 10px;
-                      "
-                      src="https://tse2.mm.bing.net/th?id=OIP.O70iDYogu82D_8mBtMDP5QHaEK&pid=Api&P=0&h=180"
-                      alt=""
-                    />
-                  </div>
-                  <div>
-                    <p>Name:{{ item.cv.name }}</p>
-                    <p>Email: {{ item.cv.email }}</p>
-                    <button
-                      @click="
-                        rejectCv({
-                          id: item.job_id,
-                          cv_id: item.cv_id,
-                        })
-                      "
-                    >
-                      Loai
-                    </button>
-                  </div>
-                  <div></div>
-                </div>
+                <cv-item
+                  :item="item"
+                  :hiringProgressRound="hiringProgressRound"
+                  @rejectCv="rejectCv"
+                  @reloadList="$emit('reloadList')"
+                  :disableButton="board.id === 0"
+                />
               </div>
             </draggable>
           </div>
@@ -92,15 +76,19 @@
 <script>
 import draggable from "vuedraggable";
 import hrJob from "../../api/hrJob";
+import CvItem from "./CvItem.vue";
 export default {
   components: {
     draggable,
+    CvItem,
   },
   data() {
     return {
       activeName: "analytic",
       dialogVisiable: false,
       dataBoardRedner: [],
+      visible: false,
+      rejectCvData: {},
     };
   },
   props: {
@@ -197,6 +185,11 @@ export default {
     async rejectCv(payload) {
       await hrJob.rejectCv(payload).then(() => this.$emit("reloadList"));
     },
+    handleOpenRejectConfirm(payload) {
+      console.log("Handle", payload);
+      this.visible = true;
+      this.rejectCvData = payload;
+    },
   },
 };
 </script>
@@ -216,6 +209,8 @@ export default {
   padding: 10px;
   border: 1px solid #ccc;
   background-color: #f9f9f9;
+  padding: 10px;
+  margin: 10px 0;
 }
 .column-list {
   display: flex;
@@ -223,7 +218,17 @@ export default {
 .cv-item {
   display: flex;
   align-items: center;
-  background: red;
-  margin-bottom: 10px;
+  margin-bottom: 25px;
+  margin: 0 10px;
+  padding: 10px;
+}
+.el-drawer__body {
+  background: #f8fafc !important;
+}
+.el-tabs__content {
+  padding-bottom: 30px !important;
+}
+.el-button--primary {
+  background: #409eff !important;
 }
 </style>
