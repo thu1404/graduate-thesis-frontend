@@ -66,7 +66,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 /* .column {
   width: 200px;
   margin: 10px;

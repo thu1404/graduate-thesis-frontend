@@ -1,30 +1,66 @@
 <template>
-  <div class="list__container">
-    <div v-for="(job, index) in jobs" :key="index" class="list__item">
-      <JobCard
-        :job="job"
-        @apply="openApplyJob(job.id)"
-        @edit="handleOpenEdit(job)"
-        @openKanban="openDrawer(job.id)"
-        @reloadList="reloadList"
+  <div class="main">
+    <div v-if="$route.path === '/'" class="search-container">
+      Keywords:
+      <el-input v-model="search.keyword" clearable class="mb-4"/>
+      salary:
+      <el-input v-model="search.salary" clearable class="mb-4"/>
+      Skill:
+      <el-select v-model="search.skills" clearable filterable multiple class="flex mb-4">
+        <el-option
+            v-for="item in skills"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+      </el-select>
+
+      filter:
+      <el-select v-model="search.filter" clearable class="flex mb-4">
+        <el-option
+            v-for="item in filter"
+            :key="item.index"
+            :label="item.name"
+            :value="item.index"
+          />
+      </el-select>
+
+      <el-button type="primary" class="mt-4" @click="searched">Search</el-button>
+    </div>
+    <div class="list__container">
+      <el-button
+        v-if="$auth.user?.role_id === 1 && $route.path !== '/'"
+        type="primary"
+        @click="openCreateJob"
+        class="self-end"
+      >
+        Add new Job
+      </el-button>
+      <div v-for="(job, index) in jobs" :key="index" class="list__item">
+        <JobCard
+          :job="job"
+          :skills="skills"
+          @apply="openApplyJob(job.id)"
+          @edit="handleOpenEdit(job)"
+          @openKanban="openDrawer(job.id)"
+          @reloadList="reloadList"
+        />
+      </div>
+      
+      <CreateJob ref="createJobModal" @submit="$emit('reloadList')" />
+      <UpdateJob ref="updateJobModal" @submit="$emit('reloadList')" />
+      <!-- <KanbanJob ref="kanbanJobDrawer" /> -->
+      <ApplyJob ref="applyJobDrawer" @apply="$emit('applyJob')" />
+      <jobBoard
+        :isOpen="isOpen"
+        :hiringProgressRound="hiringProgressRound"
+        :listRender="listRender"
+        :kanBanProgress="kanBanProgress"
+        @close="handleClose"
+        @reloadList="getKanbanProgress"
+        :dataBoard="dataBoard"
       />
     </div>
-    <el-button v-if="$auth.user?.role_id === 1" @click="openCreateJob"
-      >Add new Job</el-button
-    >
-    <CreateJob ref="createJobModal" @submit="$emit('reloadList')" />
-    <UpdateJob ref="updateJobModal" @submit="$emit('reloadList')" />
-    <KanbanJob ref="kanbanJobDrawer" />
-    <ApplyJob ref="applyJobDrawer" @apply="$emit('applyJob')" />
-    <jobBoard
-      :isOpen="isOpen"
-      :hiringProgressRound="hiringProgressRound"
-      :listRender="listRender"
-      :kanBanProgress="kanBanProgress"
-      @close="handleClose"
-      @reloadList="getKanbanProgress"
-      :dataBoard="dataBoard"
-    />
   </div>
 </template>
 <script>
@@ -37,6 +73,7 @@ import UpdateJob from "../Job/UpdateJob.vue";
 import KanbanJob from "../Job/KanbanJob.vue";
 import ApplyJob from "../Job/ApplyJob.vue";
 import JobBoard from "./JobBoard.vue";
+// import skillsApi from "../../api/skills";
 
 export default {
   name: "ListJobs",
@@ -50,6 +87,19 @@ export default {
     Kanban,
     JobBoard,
   },
+
+  props: {
+    jobs: {
+      type: Array,
+      default: () => [],
+    },
+
+    skills: {
+      type: Array,
+      default: () => [],
+    },
+  },
+
   data() {
     return {
       kanBanProgress: [],
@@ -57,13 +107,31 @@ export default {
       list: [],
       isOpen: false,
       idSelected: null,
+      search: {
+        keyword: '',
+        skills: [],
+        salary: '',
+        filter: null,
+      },
+      filter: [
+        {
+          index: 1,
+          name: 'Newest',
+        },
+        {
+          index: 2,
+          name: 'Oldest',
+        },
+        {
+          index: 3,
+          name: 'A-Z',
+        },
+        {
+          index: 4,
+          name: 'Z-A',
+        },
+      ]
     };
-  },
-  props: {
-    jobs: {
-      type: Array,
-      default: () => [],
-    },
   },
 
   watch: {
@@ -76,6 +144,7 @@ export default {
       },
     },
   },
+
   computed: {
     listRender() {
       const data = [];
@@ -97,10 +166,10 @@ export default {
       return data;
     },
     dataBoard() {
-      console.log(this.kanBanProgress);
+      // console.log(this.kanBanProgress);
       const data = [];
       this.hiringProgressRound.forEach((round) => {
-        console.log(round);
+        // console.log(round);
         const item = {
           name: round.name,
           id: round.id,
@@ -111,7 +180,7 @@ export default {
         );
         data.push(item);
       });
-      console.log(data);
+      // console.log(data);
       data.push({
         name: "Reject",
         id: 0,
@@ -120,12 +189,15 @@ export default {
       return data;
     },
   },
+
   methods: {
     reloadList() {
       this.$emit("reloadList");
     },
     openApplyJob(id) {
-      if (this.$auth.user?.role_id === 2) {
+      if (!this.$auth.loggedIn) {
+        this.$router.push('/login');
+      } else if (this.$auth.user?.role_id === 2) {
         this.$refs.applyJobDrawer.open(id);
       }
     },
@@ -158,6 +230,9 @@ export default {
         response.data.hiringProcess[0].hiring_process_round;
       loading.close();
     },
+    searched() {
+      this.$emit('search', this.search);
+    },
     openDrawer(id) {
       this.isOpen = true;
       this.idSelected = id;
@@ -169,16 +244,30 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.list {
-  &__container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.main {
+  display: flex;
+  gap: 32px;
+  padding: 32px;
+  .search-container {
+    height: 400px;
+    width: 360px;
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+    padding: 12px;
   }
+  .list {
+    &__container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-grow: 1;
+    }
 
-  &__item {
-    max-width: 1200px;
-    width: 100%;
+    &__item {
+      max-width: 1200px;
+      width: 100%;
+    }
   }
 }
+
 </style>

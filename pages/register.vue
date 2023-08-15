@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header />
     <el-form ref="form" :model="form" :rules="rules" label-position="top">
       <el-form-item prop="name" label="Your name">
         <el-input v-model="form.name" type="text" placeholder="Enter your name"/>
@@ -20,12 +21,15 @@
   </div>
 </template>
 <script>
-// import { mapActions, mapState } from 'vuex';
-// import Cookie from 'js-cookie';
+import Header from '../components/Header.vue';
 import authApi from '../api/auth';
 
 export default {
   name: 'RegisterPage',
+
+  components: {
+    Header,
+  },
 
   data() {
     return {

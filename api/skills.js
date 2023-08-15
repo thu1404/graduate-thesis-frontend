@@ -1,7 +1,7 @@
 import axios from "@/utils/axios";
 
 export default {
-  getListSkills() {
-    return axios.get('/skills');
+  getListSkills(params) {
+    return axios.get('/skills', params);
   },
 };

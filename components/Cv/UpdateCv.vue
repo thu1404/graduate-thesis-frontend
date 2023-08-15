@@ -53,6 +53,7 @@
           placeholder="Enter your address"
         />
       </el-form-item>
+
       <el-form-item prop="position" label="Prefer position">
         <el-input
           v-model="form.position"
@@ -60,6 +61,7 @@
           placeholder="Enter your prefer position"
         />
       </el-form-item>
+
       <el-form-item prop="education" label="Educations">
         <el-input
           v-model="form.education"
@@ -67,6 +69,23 @@
           placeholder="Enter your educations"
         />
       </el-form-item>
+
+      <el-form-item label="GPA">
+        <el-input
+          v-model="form.gpa"
+          type="text"
+          placeholder="Enter your GPA"
+        />
+      </el-form-item>
+
+      <el-form-item label="English level">
+        <el-input
+          v-model="form.english"
+          type="text"
+          placeholder="Enter your English level"
+        />
+      </el-form-item>
+
       <el-form-item prop="experience" label="Experience">
         <el-input
           v-model="form.experience"
@@ -74,25 +93,29 @@
           placeholder="Enter your experiences"
         />
       </el-form-item>
-      <el-select v-model="listSkillSelected" multiple placeholder="Select">
-        <el-option
-          v-for="item in listSkill"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        >
-        </el-option>
-      </el-select>
+
+      <el-form-item label="Skills">
+        <el-select v-model="listSkillSelected" filterable multiple placeholder="Select">
+          <el-option
+            v-for="item in listSkill"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-form-item prop="cv_file" label="CV file">
         <input type="file" @change="handleSelectCv" ref="fileCv" />
       </el-form-item>
-      <el-button @click="handleUpdate">Save</el-button>
+      <el-button type="success" @click="handleUpdate">Save</el-button>
     </el-form>
   </el-dialog>
 </template>
 <script>
 import candidateApi from "~/api/candidate";
 import skillsApi from "@/api/skills";
+// import skills from "../../api/skills";
 
 export default {
   name: "UpdateCv",
@@ -160,7 +183,7 @@ export default {
       this.cv_id = cv.id;
       this.form = {
         name: cv.name,
-        // avatar: cv.avatar,
+        avatar: cv.avatar,
         age: cv.age,
         gender_id: cv.gender_id,
         phone: cv.phone,
@@ -169,9 +192,12 @@ export default {
         position: cv.position,
         education: cv.education,
         experience: cv.experience,
-        // cv_file: cv.cv_file,
+        gpa: cv.gpa,
+        english: cv.english,
+        // skills: cv.get_skills,
+        cv_file: cv.cv_file,
       };
-      this.listSkillSelected = cv.get_skills || [];
+      this.listSkillSelected = cv.get_skills.map((item) => item.id) || [];
       this.isOpen = true;
       this.imagePreview = null;
     },
@@ -207,7 +233,14 @@ export default {
           return;
         }
         try {
-          await candidateApi.updateCv(this.form, this.cv_id);
+          const formData = new FormData();
+          for (const key in this.form) {
+            formData.append(key, this.form[key]);
+          }
+          this.listSkillSelected.forEach((skill) => {
+            formData.append(`skills[]`, JSON.stringify(skill));
+          });
+          await candidateApi.updateCv(formData, this.cv_id);
           this.$emit("submit");
           this.isOpen = false;
         } catch (error) {

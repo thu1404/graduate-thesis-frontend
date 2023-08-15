@@ -1,7 +1,7 @@
 <template>
   <el-drawer
     title="Job kanbans board"
-    :visible.sync="dialogVisiable"
+    :visible.sync="dialogVisible"
     direction="btt"
     :before-close="handleClose"
     size="90%"
@@ -18,17 +18,13 @@
               <h1 class="w-full font-bold mb-2 text-2xl">{{ round.name }}</h1>
               <div class="w-full">
                 <div>
-                  <span
-                    ><span class="font-bold">Pass:</span>
-                    {{ listRender[index].resolve.length }}/{{
-                      kanBanProgress.length
-                    }}({{ caculatePer(listRender[index].resolve.length) }}%)
+                  <span>
+                    <span class="font-bold label__success">Pass:</span>
+                    {{ listRender[index].resolve.length }}/{{ kanBanProgress.length }}({{ calculatePer(listRender[index].resolve.length) }}%)
                   </span>
-                  <span
-                    ><span class="font-bold">Reject</span>:
-                    {{ listRender[index].reject.length }}/{{
-                      kanBanProgress.length
-                    }}({{ caculatePer(listRender[index].reject.length) }}%)
+                  <span>
+                    <span class="font-bold label__danger">Reject:</span>
+                    {{ listRender[index].reject.length }}/{{ kanBanProgress.length }}({{ calculatePer(listRender[index].reject.length) }}%)
                   </span>
                 </div>
               </div>
@@ -62,6 +58,7 @@
                   :hiringProgressRound="hiringProgressRound"
                   @rejectCv="rejectCv"
                   @reloadList="$emit('reloadList')"
+                  @openCV="handleOpenDetailCv(item.cv)"
                   :disableButton="board.id === 0"
                 />
               </div>
@@ -70,6 +67,10 @@
         </div>
       </el-tab-pane>
     </el-tabs>
+    <DetailCv
+      ref="detailCvModal"
+      :cv="selectedCv"
+    />
   </el-drawer>
 </template>
 
@@ -77,18 +78,25 @@
 import draggable from "vuedraggable";
 import hrJob from "../../api/hrJob";
 import CvItem from "./CvItem.vue";
+import DetailCv from '../Cv/index.vue';
+
 export default {
+  name: 'Kanban',
+
   components: {
     draggable,
     CvItem,
+    DetailCv,
   },
+
   data() {
     return {
       activeName: "analytic",
-      dialogVisiable: false,
-      dataBoardRedner: [],
+      dialogVisible: false,
+      dataBoardRender: [],
       visible: false,
       rejectCvData: {},
+      selectedCv: {},
     };
   },
   props: {
@@ -114,19 +122,19 @@ export default {
     },
   },
   mounted() {
-    console.log({ dataBoard: this.dataBoard });
-    this.dialogVisiable = this.isOpen;
-    this.dataBoardRedner = this.dataBoard;
+    // console.log({ dataBoard: this.dataBoard });
+    this.dialogVisible = this.isOpen;
+    this.dataBoardRender = this.dataBoard;
   },
   watch: {
     isOpen: {
       handler() {
-        this.dialogVisiable = this.isOpen;
+        this.dialogVisible = this.isOpen;
       },
     },
     dataBoard: {
       handler() {
-        this.dataBoardRedner = this.dataBoard;
+        this.dataBoardRender = this.dataBoard;
       },
     },
   },
@@ -143,7 +151,11 @@ export default {
       console.log(tab, event);
       this.$emit("reloadList");
     },
-    caculatePer(count) {
+    handleOpenDetailCv(cv) {
+      this.selectedCv = cv;
+      this.$refs.detailCvModal.open();
+    },
+    calculatePer(count) {
       return ((count / this.kanBanProgress.length) * 100).toFixed(2);
     },
     handleClose() {
@@ -194,7 +206,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .round-list {
   display: flex;
   width: 100%;
@@ -230,5 +242,13 @@ export default {
 }
 .el-button--primary {
   background: #409eff !important;
+}
+.label {
+  &__success {
+    color: rgb(0, 226, 0);
+  }
+  &__danger {
+    color: red;
+  }
 }
 </style>

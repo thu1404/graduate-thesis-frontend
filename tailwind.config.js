@@ -8,4 +8,15 @@ export default {
     extend: {},
   },
   plugins: [],
+
+  // prefix: 'tw-',
+
+  corePlugins: {
+    preflight: false,
+  }
+
 };
+
+// module.exports = {
+//   prefix: 'tw-',
+// }

@@ -18,7 +18,6 @@
 </template>
 <script>
 import Cookie from 'js-cookie';
-// import candidateApi from '../api/candidate';
 import authApi from '../api/auth';
 import userCandidate from '~/composables/useCandidate';
 import Navbar from './Navbar.vue';
@@ -35,12 +34,6 @@ export default {
     ListJobs,
     Header,
   },
-
-  // computed: {
-  //   token() {
-  //     return Cookie.get('access_token');
-  //   }
-  // },
 
   setup() {
     const {

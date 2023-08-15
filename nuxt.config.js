@@ -27,6 +27,8 @@ export default {
     '@/plugins/element-ui',
     '@/plugins/js-cookie',
     '@/plugins/vue-meta',
+    '@/plugins/fontawesome',
+    // '@/plugins/axios',
     // '@/plugins/vue-csrf',
   ],
 
@@ -79,7 +81,7 @@ export default {
   },
 
   // router: {
-  //   middleware: ['auth'],
+  //   middleware: ['accessToken'],
   // },
 
   // serverMiddleware: [

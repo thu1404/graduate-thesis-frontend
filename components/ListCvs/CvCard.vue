@@ -18,8 +18,11 @@
         {{ cv.email }}
       </div>
     </div>
-    <el-button v-if="isApply" @click="$emit('apply')">Apply</el-button>
-    <el-button v-else @click="$emit('update')">Edit</el-button>
+    <el-button v-if="isApply" type="primary" @click="$emit('apply')">Apply</el-button>
+    <div v-else>
+      <el-button type="primary" @click="$emit('update')">Edit</el-button>
+      <el-button type="danger" @click="$emit('delete')">Delete</el-button>
+    </div>
   </div>
 </template>
 <script>
@@ -57,7 +60,8 @@ export default {
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   width: 240px;
-  height: 360px;
+  height: 380px;
+  padding: 8px;
   &__avatar {
     display: flex;
     justify-content: center;
@@ -70,6 +74,10 @@ export default {
     }
   }
   &__content {
+    white-space: nowrap;
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     & > div {
       margin-bottom: 8px;
     }

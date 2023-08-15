@@ -68,6 +68,20 @@
           placeholder="Enter your educations"
         />
       </el-form-item>
+      <el-form-item label="GPA">
+        <el-input
+          v-model="form.gpa"
+          type="text"
+          placeholder="Enter your GPA"
+        />
+      </el-form-item>
+      <el-form-item label="English level">
+        <el-input
+          v-model="form.english"
+          type="text"
+          placeholder="Enter your English level"
+        />
+      </el-form-item>
       <el-form-item prop="experience" label="Experience">
         <el-input
           v-model="form.experience"
@@ -75,19 +89,21 @@
           placeholder="Enter your experiences"
         />
       </el-form-item>
-      <el-select v-model="listSkillSelected" multiple placeholder="Select">
-        <el-option
-          v-for="item in listSkill"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        >
-        </el-option>
-      </el-select>
+      <el-form-item label="Skills">
+        <el-select v-model="listSkillSelected" filterable multiple placeholder="Select">
+          <el-option
+            v-for="item in listSkill"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-form-item prop="cv_file" label="CV file">
         <input type="file" @change="handleSelectCv" ref="fileCv" />
       </el-form-item>
-      <el-button @click="handleCreate">Create</el-button>
+      <el-button type="success" @click="handleCreate">Create</el-button>
     </el-form>
   </el-dialog>
 </template>
@@ -111,6 +127,8 @@ export default {
         address: "",
         position: "",
         education: "",
+        gpa: "",
+        english: "",
         experience: "",
         cv_file: null,
       },

@@ -7,13 +7,14 @@ function useCandidate() {
   const cvs = ref([]);
   const isFetchingCvs = ref(true);
 
-  const fetchJobs = async() => {
+  const fetchJobs = async(params) => {
     isFetchingJobs.value = true;
     try {
-      const response = await candidateApi.getJobs();
+      const response = await candidateApi.getJobs(params);
       jobs.value = response.data.data;
+      console.log(response);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       isFetchingJobs.value = false;
     }
@@ -24,8 +25,9 @@ function useCandidate() {
     try {
       const response = await candidateApi.getListCvs();
       cvs.value = response.data.data;
+      // console.log(response);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       isFetchingCvs.value = false;
     }
