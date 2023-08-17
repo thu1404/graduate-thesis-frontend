@@ -4,8 +4,12 @@ export default {
   getListCvs() {
     return axios.get('/candidate/profile');
   },
-  getJobs() {
-    return axios.get('/candidate/jobs');
+  getJobs(params) {
+    if (params) {
+      return axios.get(`/candidate/jobs?${params}`);
+    } else {
+      return axios.get('/candidate/jobs');
+    }
   },
   createCv(payloads) {
     return axios.post('/candidate/profile', payloads);

@@ -57,9 +57,9 @@ export default {
           password: this.form.password,
         }
       });
-      Cookie.set('access_token', response.data.access_token);
-      console.log(response.data.csrfToken);
-      this.storeUser(response.data.data);
+      await Cookie.set('access_token', response.data.access_token);
+      // console.log(response.data.csrfToken);
+      // this.storeUser(response.data.data);
     },
   },
 }

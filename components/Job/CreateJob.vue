@@ -62,6 +62,18 @@
       >
         <el-input v-model="form.salary" type="text" placeholder="Enter salary"/>
       </el-form-item>
+
+      <el-form-item label="Skills">
+        <el-select v-model="form.skills" multiple placeholder="Select skills">
+          <el-option
+            v-for="item in skills"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-button @click="submit">Save</el-button>
     </el-form>
   </el-dialog>
@@ -69,6 +81,7 @@
 <script>
 import useProcess from '../../composables/useProcess';
 import hrJobApi from '../../api/hrJob';
+import useSkill from '../../composables/useSkill';
 
 export default {
   name: 'CreateJob',
@@ -80,12 +93,20 @@ export default {
       fetchListProcess,
     } = useProcess();
 
+    const {
+      skills,
+      fetchSkills,
+    } = useSkill();
+
     fetchListProcess();
+    fetchSkills();
 
     return {
       listProcess,
       isFetchingListProcess,
       fetchListProcess,
+      skills,
+      fetchSkills,
     };
   },
 
@@ -100,6 +121,7 @@ export default {
         hiring_process: '',
         location: '',
         salary: '',
+        skills:[],
       },
       rules: {
         title: {
@@ -169,6 +191,7 @@ export default {
         hiring_process: '',
         location: '',
         salary: '',
+        skills: [],
       };
       this.$refs.form.clearValidate();
     },

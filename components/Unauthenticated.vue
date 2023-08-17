@@ -2,7 +2,7 @@
   <div>
     please login to use
 
-    <button @click="goToLogin">Login</button>
+    <el-button @click="goToLogin">Login</el-button>
   </div>
 </template>
 <script>

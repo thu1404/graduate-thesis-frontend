@@ -8,20 +8,21 @@
           @update="handleOpenUpdateCv(cv)"
         />
       </div>
+      <div class="cv-card__add">
+        <el-button type="primary" @click="handleOpenCreate">add profile</el-button>
+      </div>
     </div>
-
-    <el-button @click="handleOpenCreate">add profile</el-button>
     <DetailCv
       ref="detailCvModal"
       :cv="selectedCv"
     />
     <CreateCv
       ref="createCvModal"
-      @submit="fetchCvs"
+      @submit="refreshCVs"
     />
     <UpdateCv
       ref="updateCvModal"
-      @submit="fetchCvs"
+      @submit="refreshCVs"
     />
   </div>
 </template>
@@ -30,7 +31,7 @@ import CvCard from './CvCard.vue';
 import DetailCv from '../Cv/index.vue';
 import CreateCv from '../Cv/CreateCv.vue';
 import UpdateCv from '../Cv/UpdateCv.vue';
-import userCandidate from '~/composables/useCandidate';
+// import userCandidate from '~/composables/useCandidate';
 
 export default {
   name: 'ListCvs',
@@ -42,28 +43,13 @@ export default {
     UpdateCv,
   },
 
-  // props: {
-  //   cvs: {
-  //     type: Array,
-  //     default: () => [],
-  //   },
-  // },
-
-  setup() {
-    const {
-      cvs,
-      isFetchingCvs,
-      fetchCvs,
-    } = userCandidate();
-
-    fetchCvs();
-
-    return {
-      cvs,
-      isFetchingCvs,
-      fetchCvs,
-    };
+  props: {
+    cvs: {
+      type: Array,
+      default: () => [],
+    },
   },
+
 
   data() {
     return {
@@ -82,11 +68,11 @@ export default {
     handleOpenUpdateCv(cv) {
       this.$refs.updateCvModal.open(cv);
     },
+    refreshCVs() {
+      this.$emit('updateCVs')
+    }
   },
 
-  mounted() {
-    this.fetchCvs();
-  }
 
 };
 </script>
@@ -97,5 +83,16 @@ export default {
   justify-content: center;
   gap: 32px;
   margin: 16px;
+}
+.cv-card__add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // border: 1px solid black;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  width: 240px;
+  height: 396px;
+  // padding: 8px;
 }
 </style>

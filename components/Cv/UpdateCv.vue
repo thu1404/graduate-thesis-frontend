@@ -7,111 +7,183 @@
   >
     <el-form ref="form" :model="form" :rules="rules" label-position="top">
       <el-form-item>
-        <el-input v-model="form.avatar" type="file" @change="handleSelectAvatar" />
+        <input type="file" @change="handleSelectAvatar" ref="file" />
       </el-form-item>
+      <div>
+        <img
+          v-if="imagePreview"
+          :src="imagePreview"
+          alt="Image Preview"
+          style="
+            width: 300px;
+            height: 300px;
+            border-radius: 100%;
+            margin: 0 auto;
+          "
+        />
+      </div>
       <el-form-item prop="name" label="Name">
         <el-input v-model="form.name" type="text" placeholder="Enter name" />
       </el-form-item>
       <el-form-item prop="email" label="Email">
-        <el-input v-model="form.email" type="email" placeholder="Enter Email"/>
+        <el-input v-model="form.email" type="email" placeholder="Enter Email" />
       </el-form-item>
       <el-form-item prop="phone" label="phone">
-        <el-input v-model="form.phone" type="text" placeholder="Enter phone number" />
+        <el-input
+          v-model="form.phone"
+          type="text"
+          placeholder="Enter phone number"
+        />
       </el-form-item>
       <el-form-item prop="age" label="Age">
-        <el-input v-model="form.age" type="number" placeholder="Enter your age" />
+        <el-input
+          v-model="form.age"
+          type="number"
+          placeholder="Enter your age"
+        />
       </el-form-item>
       <el-form-item prop="gender" label="Gender">
         <el-radio v-model="form.gender_id" :label="1">Male</el-radio>
         <el-radio v-model="form.gender_id" :label="2">Female</el-radio>
       </el-form-item>
       <el-form-item prop="address" label="Address">
-        <el-input v-model="form.address" type="text" placeholder="Enter your address"/>
+        <el-input
+          v-model="form.address"
+          type="text"
+          placeholder="Enter your address"
+        />
       </el-form-item>
+
       <el-form-item prop="position" label="Prefer position">
-        <el-input v-model="form.position" type="text" placeholder="Enter your prefer position"/>
+        <el-input
+          v-model="form.position"
+          type="text"
+          placeholder="Enter your prefer position"
+        />
       </el-form-item>
+
       <el-form-item prop="education" label="Educations">
-        <el-input v-model="form.education" type="text" placeholder="Enter your educations"/>
+        <el-input
+          v-model="form.education"
+          type="text"
+          placeholder="Enter your educations"
+        />
       </el-form-item>
+
+      <el-form-item label="GPA">
+        <el-input
+          v-model="form.gpa"
+          type="text"
+          placeholder="Enter your GPA"
+        />
+      </el-form-item>
+
+      <el-form-item label="English level">
+        <el-input
+          v-model="form.english"
+          type="text"
+          placeholder="Enter your English level"
+        />
+      </el-form-item>
+
       <el-form-item prop="experience" label="Experience">
-        <el-input v-model="form.experience" type="text" placeholder="Enter your experiences"/>
+        <el-input
+          v-model="form.experience"
+          type="text"
+          placeholder="Enter your experiences"
+        />
       </el-form-item>
-      <el-form-item prop="skill" label="Skill">
-        <el-input v-model="form.skills" type="text" placeholder="Enter your skill"/>
+
+      <el-form-item label="Skills">
+        <el-select v-model="listSkillSelected" filterable multiple placeholder="Select">
+          <el-option
+            v-for="item in listSkill"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
+
       <el-form-item prop="cv_file" label="CV file">
-        <el-input v-model="form.cv_file" type="file" @change="handleSelectCv" />
+        <input type="file" @change="handleSelectCv" ref="fileCv" />
       </el-form-item>
-      <el-button @click="handleUpdate">Save</el-button>
+      <el-button type="success" @click="handleUpdate">Save</el-button>
     </el-form>
   </el-dialog>
 </template>
 <script>
-import candidateApi from '~/api/candidate';
+import candidateApi from "~/api/candidate";
+import skillsApi from "@/api/skills";
+// import skills from "../../api/skills";
 
 export default {
-  name: 'UpdateCv',
+  name: "UpdateCv",
 
   data() {
     return {
       isOpen: false,
-      cv_id: '',
+      imagePreview: null,
+      cv_id: "",
       form: {
-        name: '',
+        name: "",
         avatar: null,
         age: null,
         gender_id: null,
-        phone: '',
-        email: '',
-        address: '',
-        position: '',
-        education: '',
-        experience: '',
-        skills: '',
+        phone: "",
+        email: "",
+        address: "",
+        position: "",
+        education: "",
+        experience: "",
+        skills: "",
         cv_file: null,
       },
+      listSkill: [],
+      listSkillSelected: [],
       rules: {
         name: {
           required: true,
-          message: 'Password is required',
-          trigger: ['blur', 'change'],
+          message: "Password is required",
+          trigger: ["blur", "change"],
         },
         age: {
           required: true,
-          message: 'Password is required',
-          trigger: ['blur', 'change'],
+          message: "Password is required",
+          trigger: ["blur", "change"],
         },
         phone: {
           required: true,
-          message: 'Password is required',
-          trigger: ['blur', 'change'],
+          message: "Password is required",
+          trigger: ["blur", "change"],
         },
         email: {
           required: true,
-          message: 'Password is required',
-          trigger: ['blur', 'change'],
+          message: "Password is required",
+          trigger: ["blur", "change"],
         },
         address: {
           required: true,
-          message: 'Password is required',
-          trigger: ['blur', 'change'],
+          message: "Password is required",
+          trigger: ["blur", "change"],
         },
         position: {
           required: true,
-          message: 'Password is required',
-          trigger: ['blur', 'change'],
+          message: "Password is required",
+          trigger: ["blur", "change"],
         },
-      }
+      },
     };
   },
-
+  created() {
+    this.getListSkills();
+  },
   methods: {
     open(cv) {
       this.cv_id = cv.id;
       this.form = {
         name: cv.name,
-        // avatar: cv.avatar,
+        avatar: cv.avatar,
         age: cv.age,
         gender_id: cv.gender_id,
         phone: cv.phone,
@@ -120,26 +192,57 @@ export default {
         position: cv.position,
         education: cv.education,
         experience: cv.experience,
-        skills: cv.skills,
-        // cv_file: cv.cv_file,
+        gpa: cv.gpa,
+        english: cv.english,
+        // skills: cv.get_skills,
+        cv_file: cv.cv_file,
       };
+      this.listSkillSelected = cv.get_skills.map((item) => item.id) || [];
       this.isOpen = true;
+      this.imagePreview = null;
     },
-    handleSelectAvatar(event) {
-      this.form.avatar = event.target.file[0];
+    handleSelectAvatar() {
+      const fileInput = this.$refs.file;
+      const imgFile = fileInput.files;
+      this.form.avatar = imgFile[0];
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      // Ensure the file is an image
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file.");
+        return;
+      }
+
+      // Set up the FileReader to display the image once it's loaded
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+      };
+
+      // Read the image as a data URL
+      reader.readAsDataURL(file);
     },
-    handleSelectCv(event) {
-      this.form.cv_file = event.target.file[0];
+    handleSelectCv() {
+      const fileInput = this.$refs.fileCv;
+      const imgFile = fileInput.files;
+      this.form.cv_file = imgFile[0];
     },
     handleUpdate() {
-      this.$refs.form.validate(async(valid) => {
-        if(!valid) {
+      this.$refs.form.validate(async (valid) => {
+        if (!valid) {
           return;
         }
         try {
-        await candidateApi.updateCv(this.form, this.cv_id);
-        this.$emit('submit');
-        this.isOpen = false;
+          const formData = new FormData();
+          for (const key in this.form) {
+            formData.append(key, this.form[key]);
+          }
+          this.listSkillSelected.forEach((skill) => {
+            formData.append(`skills[]`, JSON.stringify(skill));
+          });
+          await candidateApi.updateCv(formData, this.cv_id);
+          this.$emit("submit");
+          this.isOpen = false;
         } catch (error) {
           console.log(error);
         }
@@ -148,23 +251,29 @@ export default {
     },
     clearForm() {
       this.form = {
-        name: '',
+        name: "",
         avatar: null,
         age: null,
         gender_id: null,
-        phone: '',
-        email: '',
-        address: '',
-        position: '',
-        education: '',
-        experience: '',
-        skill: '',
+        phone: "",
+        email: "",
+        address: "",
+        position: "",
+        education: "",
+        experience: "",
+        skill: "",
         cv_file: null,
+      };
+    },
+    async getListSkills() {
+      try {
+        const response = await skillsApi.getListSkills();
+        this.listSkill = response.data.skills;
+      } catch (e) {
+        console.log(e);
       }
     },
-  }
+  },
 };
 </script>
-<style lang="scss">
-  
-</style>
+<style lang="scss"></style>

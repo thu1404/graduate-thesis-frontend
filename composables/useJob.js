@@ -11,7 +11,7 @@ function useJob() {
       const response = await jobApi.getJobs();
       hrJobs.value = response.data.jobs;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       isFetchingHrJobs.value = false;
     }

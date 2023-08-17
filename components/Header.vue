@@ -5,6 +5,9 @@
     </div>
     <div v-if="$auth?.loggedIn" class="navigation">
       <div v-if="$auth.user?.role_id === 1" class="navigation__list">
+        <span @click="redirectCandidateJob" :class="['navigation__item', {'active': $route.path === '/'}]">
+          All Jobs
+        </span>
         <span @click="redirectHRJob" :class="['navigation__item', {'active': $route.path === '/recruiter'}]">
           Jobs List
         </span>
@@ -13,7 +16,7 @@
         </span>
       </div>
       <div v-else class="navigation__list">
-        <span @click="redirectCandidateJob" :class="['navigation__item', {'active': $route.path === '/candidate/jobs'}]">
+        <span @click="redirectCandidateJob" :class="['navigation__item', {'active': $route.path === '/'}]">
           Find Jobs
         </span>
         <span @click="redirectCandidateProfile" :class="['navigation__item', {'active': $route.path === '/candidate'}]">
@@ -23,12 +26,15 @@
     </div>
     <div class="action">
       <el-button v-if="$auth?.loggedIn" @click="logout">Logout</el-button>
-      <el-button v-else @click="register">Sign Up</el-button>
+      <div v-else>
+        <el-button @click="login">Sign in</el-button>
+        <el-button @click="register">Sign Up</el-button>
+      </div>
     </div>
   </div>
 </template>
 <script>
-import authApi from '../api/auth';
+// import authApi from '../api/auth';
 
 export default {
   name: 'Header',
@@ -49,24 +55,27 @@ export default {
     register() {
       this.$router.push('/register');
     },
+    login() {
+      this.$router.push('/login');
+    },
     redirectCandidateProfile() {
       if(this.$auth.user?.role_id === 2) {
         this.$router.push('/candidate');
       }
     },
     redirectCandidateJob() {
-      if(this.$auth.user?.role_id === 2) {
-        this.$router.push('/candidate/jobs');
-      }
+      // if(this.$auth.user?.role_id === 2) {
+        this.$router.push('/');
+      // }
     },
     redirectHRJob() {
       if(this.$auth.user?.role_id === 1) {
-        this.$router.push('/candidate');
+        this.$router.push('/recruiter');
       }
     },
     redirectHRProcess() {
       if(this.$auth.user?.role_id === 1) {
-        this.$router.push('/candidate/process');
+        this.$router.push('/recruiter/process');
       }
     },
   },
